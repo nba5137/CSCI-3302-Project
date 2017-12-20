@@ -6,9 +6,12 @@ import numpy as np
 import cv2
 import serial
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(0) ## 0 default, 1 androidcam, 2 webcam
 ## Added a variable for cell index.
 cell_index = 0;
+ser = serial.Serial('COM5')
+print(ser.name)         # check which port was really used
+
 
 ## Added function to output cell index in a txt file.
 def printout(index, filename):
@@ -82,13 +85,18 @@ while(1):
         
         ## Added: print info on screen and store index in a txt file.
         ## original position for putText: (10, frame.shape[0] - 10)
-        cv2.putText(frame, "X: {}, Y: {}, Cell: {}".format(dX, dY, cell_index),
+        cv2.putText(frame, "X: {}, Y: {}, Cell: {}".format(dX, dY, cell_index+1),
 		(20, 50), cv2.FONT_HERSHEY_SIMPLEX,
 		1, (0, 0, 255), 2)
 
         ## Storing...
+        '''
         printout(cell_index, "output.txt")
-        
+        '''
+        ##Updating to sparki.
+        ser.baudrate = 19200
+
+        ser.write(cell_index)
         cv2.imshow('img2',img2)
 
         k = cv2.waitKey(60) & 0xff
